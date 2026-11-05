@@ -1,81 +1,35 @@
 # ChatWithSQLDB
 
-## Overview
-
-ChatWithSQLDB is a Streamlit application that enables users to interact with SQL databases using natural language queries. Leveraging the LangChain framework and OpenAI's language models, this tool translates user inputs into SQL commands, facilitating seamless database interactions without the need for manual SQL scripting.
+Ask questions about a SQL database in plain English. A **LangChain SQL agent** powered by a **Groq**-hosted LLM inspects the schema, writes the SQL, runs it and explains the result — all in a **Streamlit** chat UI.
 
 ## Features
+- Natural-language → SQL → answer, with the agent's reasoning streamed live
+- Works with the bundled **SQLite** sample (`student.db`, opened **read-only**) or any **MySQL** server
+- Safe credential handling (`sqlalchemy.URL.create`), cached connections, graceful error messages
+- Chat history with a one-click reset
 
-- **Natural Language Processing**: Interpret and convert user queries into SQL statements.
-- **Database Connectivity**: Supports connections to SQLite databases.
-- **Interactive Interface**: Provides a user-friendly chat interface powered by Streamlit.
+## Setup
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env          # add GROQ_API_KEY (or paste it in the sidebar)
+python sqlite.py              # (re)creates student.db with sample data
+streamlit run app.py
+```
 
-## Installation
+## Try these questions
+- "How many students are in each class?"
+- "Who has the highest marks?"
+- "List students in DEVOPS scoring below 40."
 
-To set up the ChatWithSQLDB application locally, follow these steps:
+## Sample schema
+`STUDENT(NAME, CLASS, SECTION, MARKS)` — 5 seeded rows.
 
-1. **Clone the Repository**:
+## Configuration
+| Variable | Default |
+|---|---|
+| `GROQ_API_KEY` | – |
+| `GROQ_MODEL` | `llama-3.1-8b-instant` |
 
-   ```bash
-   git clone https://github.com/akurapati1/ChatWithSQLDB.git
-   cd ChatWithSQLDB
-   ```
-
-2. **Create a Virtual Environment**:
-
-   ```bash
-   python -m venv env
-   ```
-
-3. **Activate the Virtual Environment**:
-
-   - On Windows:
-
-     ```bash
-     .\env\Scripts\activate
-     ```
-
-   - On macOS/Linux:
-
-     ```bash
-     source env/bin/activate
-     ```
-
-4. **Install Dependencies**:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-   The `requirements.txt` file includes all necessary packages, such as Streamlit and LangChain.
-
-## Usage
-
-1. **Prepare the Database**:
-
-   Ensure you have an SQLite database (e.g., `student.db`) in the project directory. This database should contain the tables and data you intend to query.
-
-2. **Run the Application**:
-
-   ```bash
-   streamlit run app.py
-   ```
-
-   This command will launch the Streamlit application, and a web browser window should open displaying the chat interface.
-
-3. **Interact with the Database**:
-
-   - In the chat interface, input your natural language queries related to the database content.
-   - The application will process your input, convert it into an SQL query, execute it, and return the results in a readable format.
-
-## Dependencies
-
-The project relies on the following Python packages:
-
-- `streamlit`
-- `langchain`
-- `sqlalchemy`
-- `pysqlite3`
-
-These dependencies are specified in the `requirements.txt` file and can be installed using the provided installation instructions.
-
+## Notes
+The SQLite connection is read-only. When pointing at MySQL, use a database user with **read-only** privileges — LLM-generated SQL should never run with write access.

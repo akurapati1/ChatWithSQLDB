@@ -1,32 +1,27 @@
+"""Create (or reset) the sample SQLite database `student.db` used by the app."""
 import sqlite3
+from pathlib import Path
 
-## connect to sqllite
-connection=sqlite3.connect("students.db")
+DB_PATH = Path(__file__).parent / "student.db"
 
-##create a cursor object to insert record,create table
-cursor=connection.cursor()
+SAMPLE_ROWS = [
+    ("Krish", "Data Science", "A", 90),
+    ("John", "Data Science", "B", 100),
+    ("Mukesh", "Data Science", "A", 86),
+    ("Jacob", "DEVOPS", "A", 50),
+    ("Dipesh", "DEVOPS", "A", 35),
+]
 
-## create the table
-table_info="""
-create table STUDENT(NAME VARCHAR(25),CLASS VARCHAR(25),
-SECTION VARCHAR(25),MARKS INT)
-"""
 
-cursor.execute(table_info)
+def seed(path: Path = DB_PATH) -> None:
+    with sqlite3.connect(path) as conn:
+        conn.execute("DROP TABLE IF EXISTS STUDENT")
+        conn.execute("CREATE TABLE STUDENT (NAME VARCHAR(25), CLASS VARCHAR(25), SECTION VARCHAR(25), MARKS INT)")
+        conn.executemany("INSERT INTO STUDENT VALUES (?, ?, ?, ?)", SAMPLE_ROWS)
+        print("Inserted records:")
+        for row in conn.execute("SELECT * FROM STUDENT"):
+            print(row)
 
-## Insert some more records
-cursor.execute('''Insert Into STUDENT values('Krish','Data Science','A',90)''')
-cursor.execute('''Insert Into STUDENT values('John','Data Science','B',100)''')
-cursor.execute('''Insert Into STUDENT values('Mukesh','Data Science','A',86)''')
-cursor.execute('''Insert Into STUDENT values('Jacob','DEVOPS','A',50)''')
-cursor.execute('''Insert Into STUDENT values('Dipesh','DEVOPS','A',35)''')
 
-## Display all the records
-print("The inserted records are")
-data=cursor.execute('''Select * from STUDENT''')
-for row in data:
-    print(row)
-
-## Commit your changes in the database
-connection.commit()
-connection.close()
+if __name__ == "__main__":
+    seed()
