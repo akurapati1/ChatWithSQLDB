@@ -5,9 +5,8 @@ from pathlib import Path
 
 import streamlit as st
 from dotenv import load_dotenv
-from langchain.agents import create_sql_agent
-from langchain.callbacks import StreamlitCallbackHandler
-from langchain_community.agent_toolkits import SQLDatabaseToolkit
+from langchain_community.agent_toolkits import SQLDatabaseToolkit, create_sql_agent
+from langchain_community.callbacks import StreamlitCallbackHandler
 from langchain_community.utilities import SQLDatabase
 from langchain_groq import ChatGroq
 from sqlalchemy import create_engine
