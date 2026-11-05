@@ -31,5 +31,11 @@ streamlit run app.py
 | `GROQ_API_KEY` | – |
 | `GROQ_MODEL` | `llama-3.1-8b-instant` |
 
+## Deploy for free (Streamlit Community Cloud)
+1. Sign in at <https://share.streamlit.io> with GitHub (free, no card).
+2. **New app** → repository `akurapati1/ChatWithSQLDB`, branch `main`, main file `app.py`.
+3. *Advanced settings*: Add secrets, e.g. `GROQ_API_KEY = "your-key"`.
+4. Deploy. The bundled SQLite sample works out of the box; MySQL needs a database reachable from the internet.
+
 ## Notes
 The SQLite connection is read-only. When pointing at MySQL, use a database user with **read-only** privileges — LLM-generated SQL should never run with write access.
